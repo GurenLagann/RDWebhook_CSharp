@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
+using static System.Console;
+
 using SugarApi.Models;
 using SugarApi.Views;
-using SugarApi.Data;
 
 namespace SugarApi.Controllers{
   [ApiController]
@@ -16,30 +17,37 @@ namespace SugarApi.Controllers{
     [HttpPost]
     [Route("")]
 
-    public async Task<ActionResult<Sugar>> Post(
-      [FromServices]DataContext context,
+    public AcceptedResult Webhook(
       [FromBody] Sugar model
-    )
-    {
-      if(ModelState.IsValid) {
-        context.Sugar.Add(model);
-        await context.SaveChangesAsync();
-        return model;
-      }
-      else {
-        return BadRequest(ModelState);
-      }
-    }
-
-    public AcceptedResult Webhook() {
-      var rd = new Sugar();
-      var list = rd.leads;
-      Console.WriteLine(list);
-
-      return Accepted(202);
+    ) {
+      Requisicao r1 = new Requisicao();
+      Token token = r1.Autentica();
+      SugarLeads leads = new SugarLeads(); 
       
-    }
-    
+      var AccessToken = token.access_token;
+      var email = model.leads[0].email;
+      var PLeads = "Leads?filter[0][email]=" + email;      
+      leads = r1.isLead(PLeads, AccessToken);      
+      var Lemails = leads.records[0].email[0].email_address; 
+      
+      if(Lemails == null){
+        SugarLeads client = new SugarLeads();
+        var PClient = "Contacts?filter[0][email]=" + email;
+        client = r1.isClient(PClient, AccessToken);
+        var Cemails = client.records[0].email[0].email_address;
+        if(Cemails == null){          
+          return Accepted(model);
+        }
+        else{
+          return Accepted(leads);
+        }      
+      }
+      else{
+        return Accepted(model);        
+      }
+
+        
+    }  
   }
     
 }
