@@ -2,6 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.IO;
+using System.Net;
 
 namespace SugarApi.Models{
  public class Sugar{
@@ -71,10 +78,10 @@ namespace SugarApi.Models{
 
  public class customFields{      
    [JsonProperty ("Interessado em")]
-   public string interessado {get; set;}
+   public string Interessado {get; set;}
      
    [JsonProperty("Faixa de investimento OK")]
-   public string investimento {get; set;} 
+   public string Faixa {get; set;} 
 
    [JsonProperty("mensagem")]
    public string mensagem  {get; set;}

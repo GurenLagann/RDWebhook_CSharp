@@ -71,10 +71,10 @@ namespace SugarApi.Views {
                 SugarLeads leads = new SugarLeads();
 
                 try {
-                    Task<HttpResponseMessage> response =  cliente.GetAsync(url);
+                    Task<HttpResponseMessage> response = cliente.GetAsync(url);
                     var responseAux = response.Result.Content.ReadAsStringAsync();
                     var jsonResult = responseAux.Result; 
-                             
+
                   
                     leads = JsonConvert.DeserializeObject<SugarLeads>(jsonResult);
                     
